@@ -111,3 +111,15 @@ addContact = async () => {
 	}
 }
 
+getContactList = async () => {
+	const request = {
+		method:"GET"
+	}
+	const response = await fetch("/api/contact",request);
+	if(response.ok) {
+		const list = await response.json();
+		console.log(list)
+	} else {
+		console.log("Get contacts failed. Reason:"+response.status+" "+response.statusText)
+	}
+}
