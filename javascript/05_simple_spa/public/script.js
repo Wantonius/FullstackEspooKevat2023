@@ -125,3 +125,33 @@ getContactList = async () => {
 		console.log("Get contacts failed. Reason:"+response.status+" "+response.statusText)
 	}
 }
+
+populateTable = (data) => {
+	const root = document.getElementById("root");
+	const oldTable = document.getElementById("table");
+	if(table) {
+		root.removeChild(oldTable);
+	}
+	const table = document.createElement("table");
+	table.setAttribute("id","table");
+	table.setAttribute("class","table table-striped");
+	
+	//Table header
+	const header = document.createElement("thead");
+	const headerRow = document.createElement("tr");
+	const firstNameHeader = document.createElement("th");
+	const firstNameText = document.createTextNode("First Name");
+	firstNameHeader.appendChild(firstNameText);
+	const lastNameHeader = document.createElement("th");
+	const lastNameText = document.createTextNode("Last Name");
+	lastNameHeader.appendChild(lastNameText);
+	const emailHeader = document.createElement("th");
+	const emailText = document.createTextNode("Email");
+	emailHeader.appendChild(emailText);
+	const phoneHeader = document.createElement("th");
+	const phoneText = document.createTextNode("Phone");
+	phoneHeader.appendChild(phoneText);
+}
+
+
+
