@@ -121,6 +121,7 @@ getContactList = async () => {
 	if(response.ok) {
 		const list = await response.json();
 		console.log(list)
+		populateTable(list);
 	} else {
 		console.log("Get contacts failed. Reason:"+response.status+" "+response.statusText)
 	}
@@ -151,6 +152,17 @@ populateTable = (data) => {
 	const phoneHeader = document.createElement("th");
 	const phoneText = document.createTextNode("Phone");
 	phoneHeader.appendChild(phoneText);
+
+	headerRow.appendChild(firstNameHeader);
+	headerRow.appendChild(lastNameHeader);
+	headerRow.appendChild(emailHeader);
+	headerRow.appendChild(phoneHeader);
+	
+	header.appendChild(headerRow);
+	
+	table.appendChild(header);
+	
+	root.appendChild(table);
 }
 
 
