@@ -4,6 +4,7 @@ window.onload = function(){
 
 createForm = () => {
 	let root = document.getElementById("root");
+	root.setAttribute("class","mb-3");
 	let form = document.createElement("form");
 	
 	//First name input and label
@@ -18,4 +19,72 @@ createForm = () => {
 	let firstNameText = document.createTextNode("First Name");
 	firstNameLabel.appendChild(firstNameText);
 	
+	//Last name input and label
+	
+	let lastNameInput = document.createElement("input");
+	lastNameInput.setAttribute("type","text");
+	lastNameInput.setAttribute("value","");
+	lastNameInput.setAttribute("name","lastname");
+	lastNameInput.setAttribute("id","lastname");
+	let lastNameLabel = document.createElement("label");
+	lastNameLabel.setAttribute("for","lastname");
+	let lastNameText = document.createTextNode("Last Name");
+	lastNameLabel.appendChild(lastNameText);
+
+	//Email input and label
+	
+	let emailInput = document.createElement("input");
+	emailInput.setAttribute("type","email");
+	emailInput.setAttribute("value","");
+	emailInput.setAttribute("name","email");
+	emailInput.setAttribute("id","email");
+	let emailLabel = document.createElement("label");
+	emailLabel.setAttribute("for","email");
+	let emailText = document.createTextNode("Email");
+	emailLabel.appendChild(emailText);
+	
+	//Phone input and label
+
+	let phoneInput = document.createElement("input");
+	phoneInput.setAttribute("type","tel");
+	phoneInput.setAttribute("value","");
+	phoneInput.setAttribute("name","phone");
+	phoneInput.setAttribute("id","phone");
+	let phoneLabel = document.createElement("label");
+	phoneLabel.setAttribute("for","phone");
+	let phoneText = document.createTextNode("Phone");
+	phoneLabel.appendChild(phoneText);
+
+	//Submit Button
+	
+	let submitButton = document.createElement("input");
+	submitButton.setAttribute("type","submit");
+	submitButton.setAttribute("id","submitbutton");
+	submitButton.setAttribute("value","Add");
+	submitButton.setAttribute("class","btn btn-primary");
+
+	//Append to form
+	let br = document.createElement("br");
+	form.appendChild(firstNameLabel);
+	form.appendChild(firstNameInput);
+	form.appendChild(br);
+	form.appendChild(lastNameLabel);
+	form.appendChild(lastNameInput);
+	form.appendChild(br.cloneNode());
+	form.appendChild(emailLabel);
+	form.appendChild(emailInput);
+	form.appendChild(br.cloneNode());
+	form.appendChild(phoneLabel);
+	form.appendChild(phoneInput);
+	form.appendChild(br.cloneNode());
+	form.appendChild(submitButton);
+	form.addEventListener("submit",function(e) {
+		e.preventDefault();
+	})
+	
+	//append to root
+	root.appendChild(form);
 }
+
+
+
