@@ -128,9 +128,10 @@ getContactList = async () => {
 }
 
 populateTable = (data) => {
+	console.log("MOI!");
 	const root = document.getElementById("root");
 	const oldTable = document.getElementById("table");
-	if(table) {
+	if(oldTable) {
 		root.removeChild(oldTable);
 	}
 	const table = document.createElement("table");
