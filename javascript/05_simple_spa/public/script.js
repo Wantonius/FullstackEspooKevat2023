@@ -162,6 +162,21 @@ populateTable = (data) => {
 	header.appendChild(headerRow);
 	
 	table.appendChild(header);
+	const body = document.createElement("tbody");
+	for(let i=0;i<data.length;i++) {
+		const tableRow = document.createElement("tr");
+		for (x in data[i]) {
+			if(x === "id") {
+				continue;
+			}
+			const column = document.createElement("td");
+			const info = document.createTextNode(data[i][x]);
+			column.appendChild(info);
+			tableRow.appendChild(column);
+		}
+		body.appendChild(tableRow);
+	}
+	table.appendChild(body);
 	
 	root.appendChild(table);
 }
