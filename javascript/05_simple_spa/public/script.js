@@ -1,5 +1,6 @@
 window.onload = function(){
 	createForm();
+	getContactList();
 }
 
 createForm = () => {
@@ -106,6 +107,7 @@ addContact = async () => {
 	const response = await fetch("/api/contact",request);
 	if(response.ok) {
 		console.log("Add contact success!");
+		getContactList();
 	} else {
 		console.log("Add contact failed. Reason:"+response.status+" "+response.statusText)
 	}
