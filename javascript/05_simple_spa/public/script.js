@@ -80,11 +80,34 @@ createForm = () => {
 	form.appendChild(submitButton);
 	form.addEventListener("submit",function(e) {
 		e.preventDefault();
+		addContact();
 	})
 	
 	//append to root
 	root.appendChild(form);
 }
 
-
+addContact = async () => {
+	const firstname = document.getElementById("firstname").value;
+	const lastname = document.getElementById("lastname").value;
+	const email = document.getElementById("email").value;
+	const phone = document.getElementById("phone").value;
+	const contact = {
+		"firstname":firstname,
+		"lastname":lastname,
+		"email":email,
+		"phone":phone
+	}
+	const request = {
+		method:"POST",
+		headers:{"Content-Type":"application/json"},
+		body:JSON.stringify(contact)
+	}
+	const response = await fetch("/api/contact",request);
+	if(response.ok) {
+		console.log("Add contact success!");
+	} else {
+		console.log("Add contact failed. Reason:"+response.status+" "+response.statusText)
+	}
+}
 
