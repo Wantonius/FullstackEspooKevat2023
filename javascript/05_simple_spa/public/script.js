@@ -1,3 +1,5 @@
+var mode = 0;
+
 window.onload = function(){
 	createForm();
 	getContactList();
@@ -99,15 +101,27 @@ addContact = async () => {
 		"email":email.value,
 		"phone":phone.value
 	}
-	const request = {
+	let url = "/api/contact";
+	let request = {
 		method:"POST",
 		headers:{"Content-Type":"application/json"},
 		body:JSON.stringify(contact)
 	}
-	const response = await fetch("/api/contact",request);
+	if(mode) {
+		url = "/api/contact/"+mode
+		request = {
+			method:"PUT",
+			headers:{"Content-Type":"application/json"},
+			body:JSON.stringify(contact)
+		}
+	} 
+	const response = await fetch(url,request);
 	if(response.ok) {
 		console.log("Add contact success!");
 		getContactList();
+		const submitbutton = document.getElementById("submitbutton");
+		submitbutton.value = "Add";
+		mode = 0;
 		firstname.value = "";
 		lastname.value = "";
 		email.value = "";
@@ -141,6 +155,20 @@ removeContact =  async (id) => {
 	} else {
 		console.log("Remove contact failed. Reason:"+response.status+" "+response.statusText)
 	}
+}
+
+editContact = (contact) => {
+	const firstname = document.getElementById("firstname");
+	const lastname = document.getElementById("lastname");
+	const email = document.getElementById("email");
+	const phone = document.getElementById("phone");
+	firstname.value = contact.firstname;
+	lastname.value = contact.lastname;
+	email.value = contact.email;
+	phone.value = contact.phone;
+	const submitbutton = document.getElementById("submitbutton");
+	submitbutton.value = "Save";
+	mode = contact.id;
 }
 
 populateTable = (data) => {
