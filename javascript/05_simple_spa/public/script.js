@@ -191,6 +191,7 @@ populateTable = (data) => {
 		}
 		const removeColumn = document.createElement("td");
 		const removeButton = document.createElement("button");
+		removeButton.setAttribute("class","btn btn-danger");
 		const removeButtonText = document.createTextNode("Remove");
 		removeButton.appendChild(removeButtonText);
 		removeButton.addEventListener("click",function(e) {
