@@ -89,15 +89,15 @@ createForm = () => {
 }
 
 addContact = async () => {
-	const firstname = document.getElementById("firstname").value;
-	const lastname = document.getElementById("lastname").value;
-	const email = document.getElementById("email").value;
-	const phone = document.getElementById("phone").value;
+	const firstname = document.getElementById("firstname");
+	const lastname = document.getElementById("lastname");
+	const email = document.getElementById("email");
+	const phone = document.getElementById("phone");
 	const contact = {
-		"firstname":firstname,
-		"lastname":lastname,
-		"email":email,
-		"phone":phone
+		"firstname":firstname.value,
+		"lastname":lastname.value,
+		"email":email.value,
+		"phone":phone.value
 	}
 	const request = {
 		method:"POST",
@@ -108,6 +108,10 @@ addContact = async () => {
 	if(response.ok) {
 		console.log("Add contact success!");
 		getContactList();
+		firstname.value = "";
+		lastname.value = "";
+		email.value = "";
+		phone.value = "";
 	} else {
 		console.log("Add contact failed. Reason:"+response.status+" "+response.statusText)
 	}
