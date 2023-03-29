@@ -199,13 +199,16 @@ populateTable = (data) => {
 	const removeHeader = document.createElement("th");
 	const removeText = document.createTextNode("Remove");
 	removeHeader.appendChild(removeText);
+	const editHeader = document.createElement("th");
+	const editText = document.createTextNode("Edit");
+	editHeader.appendChild(editText);
 	
 	headerRow.appendChild(firstNameHeader);
 	headerRow.appendChild(lastNameHeader);
 	headerRow.appendChild(emailHeader);
 	headerRow.appendChild(phoneHeader);
 	headerRow.appendChild(removeHeader);
-	
+	headerRow.appendChild(editHeader);
 	header.appendChild(headerRow);
 	
 	table.appendChild(header);
@@ -229,8 +232,19 @@ populateTable = (data) => {
 		removeButton.addEventListener("click",function(e) {
 			removeContact(data[i].id);
 		})
+		const editColumn = document.createElement("td");
+		const editButton = document.createElement("button");
+		editButton.setAttribute("class","btn btn-secondary");
+		const editButtonText = document.createTextNode("Edit");
+		editButton.appendChild(editButtonText);
+		editButton.addEventListener("click",function(e) {
+			editContact(data[i]);
+		})
+		
 		removeColumn.appendChild(removeButton);
+		editColumn.appendChild(editButton);
 		tableRow.appendChild(removeColumn);
+		tableRow.appendChild(editColumn);
 		body.appendChild(tableRow);
 	}
 	table.appendChild(body);
