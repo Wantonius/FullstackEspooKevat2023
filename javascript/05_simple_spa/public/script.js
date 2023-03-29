@@ -127,8 +127,19 @@ getContactList = async () => {
 	}
 }
 
+removeContact =  async (id) => {
+	const request = {
+		method:"DELETE"
+	}
+	const response = await fetch("/api/contact/"+id,request);
+	if(response.ok) {
+		getContactList();
+	} else {
+		console.log("Remove contact failed. Reason:"+response.status+" "+response.statusText)
+	}
+}
+
 populateTable = (data) => {
-	console.log("MOI!");
 	const root = document.getElementById("root");
 	const oldTable = document.getElementById("table");
 	if(oldTable) {
