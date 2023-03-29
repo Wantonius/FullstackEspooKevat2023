@@ -164,11 +164,15 @@ populateTable = (data) => {
 	const phoneHeader = document.createElement("th");
 	const phoneText = document.createTextNode("Phone");
 	phoneHeader.appendChild(phoneText);
-
+	const removeHeader = document.createElement("th");
+	const removeText = document.createTextNode("Remove");
+	removeHeader.appendChild(removeText);
+	
 	headerRow.appendChild(firstNameHeader);
 	headerRow.appendChild(lastNameHeader);
 	headerRow.appendChild(emailHeader);
 	headerRow.appendChild(phoneHeader);
+	headerRow.appendChild(removeHeader);
 	
 	header.appendChild(headerRow);
 	
@@ -185,6 +189,15 @@ populateTable = (data) => {
 			column.appendChild(info);
 			tableRow.appendChild(column);
 		}
+		const removeColumn = document.createElement("td");
+		const removeButton = document.createElement("button");
+		const removeButtonText = document.createTextNode("Remove");
+		removeButton.appendChild(removeButtonText);
+		removeButton.addEventListener("click",function(e) {
+			removeContact(data[i].id);
+		})
+		removeColumn.appendChild(removeButton);
+		tableRow.appendChild(removeColumn);
 		body.appendChild(tableRow);
 	}
 	table.appendChild(body);
