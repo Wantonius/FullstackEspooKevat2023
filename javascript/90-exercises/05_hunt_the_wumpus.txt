@@ -1,0 +1,3 @@
+Create an implementation of Hunt the Wumpus with javascript
+
+https://en.wikipedia.org/wiki/Hunt_the_Wumpus
