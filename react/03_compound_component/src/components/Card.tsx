@@ -1,4 +1,6 @@
 import React,{useState} from 'react';
+import Square from './Square';
+import Label from './Label';
 
 interface State {
 	color:string;
@@ -21,6 +23,20 @@ const Card:React.FC<{}> = (props) => {
 			color:color
 		})
 	}
+	
+	let cardStyle:React.CSSProperties = {
+		height:200,
+		width:150,
+		backgroundColor:"#FFF",
+		filter:"drop-shadow(0px 0px 5px #666)"
+	}
+
+	return(
+		<div style={cardStyle}>
+			<Square color={state.color}/>
+			<Label color={state.color} changeColor={changeColor}/>
+		</div>
+	)
 }
 
 export default Card;
