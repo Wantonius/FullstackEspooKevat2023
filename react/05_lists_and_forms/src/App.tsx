@@ -2,6 +2,8 @@ import React,{useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Contact from './models/Contact';
+import ContactForm from './components/ContactForm';
+import ContactList from './components/ContactList';
 
 interface State {
 	list:Contact[];
@@ -37,7 +39,9 @@ function App() {
 	
 	return (
 		<div className="App">
-
+			<ContactForm addContact={addContact}/>
+			<hr/>
+			<ContactList list={state.list} removeContact={removeContact}/>
 		</div>
 	);
 }
