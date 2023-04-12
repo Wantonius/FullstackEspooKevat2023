@@ -11,7 +11,7 @@ function App() {
 	
 	const computeWordLength = (word:string) => {
 		let i = 0;
-		while(i<100000000) {
+		while(i<1000000000) {
 			i++;
 		}
 		return word.length;
@@ -27,7 +27,7 @@ function App() {
 				const next = currentWord + 1 === words.length ? 0 : currentWord+1;
 				setCurrentWord(next);
 			}
-			}}>Next Word</button>
+			}>Next Word</button>
 		
 			<h2>Increment counter</h2>
 			<h2>Current value:{count}</h2>
