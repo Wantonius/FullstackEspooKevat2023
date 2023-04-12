@@ -31,6 +31,9 @@ const ContactForm:React.FC<Props> = (props:Props) => {
 	}
 	
 	const onSubmit = (event:React.SyntheticEvent) => {
+		if(state.firstname === "" || state.lastname === "" || state.email === "" || state.phone === "") {
+			return;
+		}
 		event.preventDefault();
 		let contact = new Contact(state.firstname,state.lastname,state.email,state.phone,0);
 		props.addContact(contact);
@@ -42,7 +45,7 @@ const ContactForm:React.FC<Props> = (props:Props) => {
 		})
 	}
 	return(
-		<div style={{"width":500,"backgroundColor":"lightgreen"}}>
+		<div style={{"width":500,"backgroundColor":"lightgreen","margin":"auto"}}>
 			<form className="mb-3" onSubmit={onSubmit}>
 				<label className="form-label" htmlFor="firstname">First Name</label>
 				<input type="text"
