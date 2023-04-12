@@ -31,10 +31,10 @@ const ContactForm:React.FC<Props> = (props:Props) => {
 	}
 	
 	const onSubmit = (event:React.SyntheticEvent) => {
+		event.preventDefault();
 		if(state.firstname === "" || state.lastname === "" || state.email === "" || state.phone === "") {
 			return;
 		}
-		event.preventDefault();
 		let contact = new Contact(state.firstname,state.lastname,state.email,state.phone,0);
 		props.addContact(contact);
 		setState({
