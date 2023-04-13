@@ -96,7 +96,7 @@ const useAction = () => {
 		})
 	}
 	
-	return [state,getList,add,remove,edit];
+	return {state,getList,add,remove,edit};
 }
 
 export default useAction;

@@ -49,12 +49,14 @@ const ShoppingForm:React.FC<Props> = (props:Props) => {
 				<input type="text"
 						name="type"
 						id="type"
+						className="form-control"
 						onChange={onChange}
 						value={state.type}/>
 				<label className="form-label" htmlFor="count">Count</label>
 				<input type="number"
 						name="count"
 						id="count"
+						className="form-control"
 						onChange={onChange}
 						value={state.count}/>
 				<label className="form-label" htmlFor="price">Price</label>
@@ -62,6 +64,7 @@ const ShoppingForm:React.FC<Props> = (props:Props) => {
 						name="price"
 						id="price"
 						step="0.01"
+						className="form-control"
 						onChange={onChange}
 						value={state.price}/>						
 				<input type="submit" className="btn btn-primary" value="Add"/>
