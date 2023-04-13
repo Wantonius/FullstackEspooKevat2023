@@ -1,5 +1,4 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{useEffect} from 'react';
 import './App.css';
 import useAction from './hooks/useAction';
 import ShoppingForm from './components/ShoppingForm';
@@ -9,6 +8,10 @@ function App() {
 	
 	const action = useAction();
   
+	useEffect(() => {
+		action.getList();
+	},[])
+	
 	return (
 		<div className="App">
 			<ShoppingForm add={action.add}/>
