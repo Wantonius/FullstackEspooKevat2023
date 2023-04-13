@@ -21,7 +21,39 @@ const useAction = () => {
 	})
 	
 	//FETCH useEffect
-	useEffect(() => {},[urlRequest]);
+	useEffect(() => {
+		
+		const fetchData = async () => {
+			const response = await fetch(urlRequest.request);
+			if(!response) {
+				console.log("Server sent no response!");
+				return;
+			}
+			if(response.ok) {
+				switch(urlRequest.action) {
+					case "getlist":
+						let temp = await response.json();
+						let list:ShoppingItem[] = temp as ShoppingItem[];
+						setState({
+							list:list
+						})
+						return;
+					case "additem":
+					case "removeitem":
+					case "edititem":
+						getList();
+						return;
+					default:
+						return;
+				}
+			} else {
+				console.log("Server responded with a status "+response.status+" "+response.statusText);
+			}
+		}
+		
+		fetchData();
+		
+	},[urlRequest]);
 
 	//HELPER FUNCTIONS
 	const getList = () => {
