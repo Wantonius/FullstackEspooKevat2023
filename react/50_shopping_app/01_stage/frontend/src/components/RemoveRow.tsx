@@ -3,25 +3,25 @@ import ShoppingItem from '../models/ShoppingItem';
 
 interface Props {
 	item:ShoppingItem;
-	index:number;
+	removeItem(id:number):void;
 	changeMode(index:number,mode:string):void;
 }
 
-const Row:React.FC<Props> = (props:Props) => {
+const RemoveRow:React.FC<Props> = (props:Props) => {
 	
 	return (
 		<tr>
 			<td>{props.item.type}</td>
 			<td>{props.item.count}</td>
 			<td>{props.item.price}</td>
-			<td><button className="btn btn-danger"
-				onClick={() => props.changeMode(props.index,"remove")}
-			>Remove</button></td>
 			<td><button className="btn btn-secondary"
-				onClick={() => props.changeMode(props.index,"edit")}
-			>Edit</button></td>
+				onClick={() => props.changeMode(0,"cancel")}
+			>Cancel</button></td>
+			<td><button className="btn btn-danger"
+				onClick={() => props.removeItem(props.item.id)}
+			>Remove</button></td>
 		</tr>
 	)
 }
 
-export default Row;
+export default RemoveRow;
