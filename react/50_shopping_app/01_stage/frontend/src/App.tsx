@@ -3,6 +3,7 @@ import './App.css';
 import useAction from './hooks/useAction';
 import ShoppingForm from './components/ShoppingForm';
 import ShoppingList from './components/ShoppingList';
+import Navbar from './components/Navbar';
 
 function App() {
 	
@@ -14,6 +15,7 @@ function App() {
 	
 	return (
 		<div className="App">
+			<Navbar/>
 			<ShoppingForm add={action.add}/>
 			<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove}/>
 		</div>
