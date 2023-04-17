@@ -4,6 +4,7 @@ import useAction from './hooks/useAction';
 import ShoppingForm from './components/ShoppingForm';
 import ShoppingList from './components/ShoppingList';
 import Navbar from './components/Navbar';
+import {Routes,Route,Navigate} from 'react-router-dom'
 
 function App() {
 	
@@ -16,8 +17,13 @@ function App() {
 	return (
 		<div className="App">
 			<Navbar/>
-			<ShoppingForm add={action.add}/>
-			<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove}/>
+			<Routes>
+				<Route path="/" element={<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove} />}
+				/>
+				<Route path="/form" element={<ShoppingForm add={action.add} />} 
+				/>
+				<Route path="*" element={<Navigate to="/"/>}/>
+			</Routes>
 		</div>
 	);
 }
