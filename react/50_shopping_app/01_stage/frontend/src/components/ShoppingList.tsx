@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import ShoppingItem from '../models/ShoppingItem';
 import Row from './Row';
 import RemoveRow from './RemoveRow';
+import EditRow from './EditRow';
 
 interface Props {
 	list:ShoppingItem[];
@@ -59,7 +60,9 @@ const ShoppingList:React.FC<Props> = (props:Props) => {
 			)
 		}
 		if(state.editIndex === index) {
-			//TODO: return editrow
+			return(
+				<EditRow key={item.id} item={item} changeMode={changeMode} editItem={editItem}/>
+			)
 		}
 		return (
 			<Row key={item.id} item={item} index={index} changeMode={changeMode}/>
