@@ -1,5 +1,6 @@
 import {useState,useEffect} from 'react';
 import ShoppingItem from '../models/ShoppingItem';
+import User from '../models/User';
 
 interface State {
 	list:ShoppingItem[];
@@ -59,10 +60,12 @@ const useAction = () => {
 	
 	const setError = (error:string) => {
 		setState((state) => {
-			return {
+			let tempState = {
 				...state,
 				error:error
 			}
+			saveToStorage(tempState);
+			return tempState;
 		})
 	}
 	
@@ -180,7 +183,8 @@ const useAction = () => {
 	const getList = (token:string) => {
 		setUrlRequest({
 			request:new Request("/api/shopping",{
-				method:"GET"
+				method:"GET",
+				headers:{"token":token}
 			}),
 			action:"getlist"
 		})
@@ -190,7 +194,8 @@ const useAction = () => {
 		setUrlRequest({
 			request:new Request("/api/shopping",{
 				method:"POST",
-				headers:{"Content-Type":"application/json"},
+				headers:{"Content-Type":"application/json",
+						"token":state.token},
 				body:JSON.stringify(item)
 			}),
 			action:"additem"
@@ -200,7 +205,8 @@ const useAction = () => {
 	const remove = (id:number) => {
 		setUrlRequest({
 			request:new Request("/api/shopping/"+id,{
-				method:"DELETE"
+				method:"DELETE",
+				headers:{"token":state.token}
 			}),
 			action:"removeitem"
 		})
@@ -210,14 +216,49 @@ const useAction = () => {
 		setUrlRequest({
 			request:new Request("/api/shopping/"+item.id,{
 				method:"PUT",
-				headers:{"Content-Type":"application/json"},
+				headers:{"Content-Type":"application/json",
+						"token":state.token},
 				body:JSON.stringify(item)
 			}),
 			action:"edititem"
 		})
 	}
 	
-	return {state,getList,add,remove,edit};
+	const register = (user:User) => {
+		setUrlRequest({
+			request:new Request("/register",{
+				method:"POST",
+				headers:{"Content-Type":"application/json"},
+				body:JSON.stringify(user)
+			}),
+			action:"register"
+		})
+	}
+
+	const login = (user:User) => {
+		setUrlRequest({
+			request:new Request("/login",{
+				method:"POST",
+				headers:{"Content-Type":"application/json"},
+				body:JSON.stringify(user)
+			}),
+			action:"login"
+		})
+	}
+	
+	const logout = () => {
+		setUrlRequest({
+			request:new Request("/logout",{
+				method:"POST",
+				headers:{"Content-Type":"application/json",
+						"token":state.token}
+			}),
+			action:"logout"
+		})
+	}
+
+	
+	return {state,getList,add,remove,edit,register,login,logout};
 }
 
 export default useAction;
