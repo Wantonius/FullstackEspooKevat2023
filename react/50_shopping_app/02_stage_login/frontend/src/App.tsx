@@ -22,7 +22,7 @@ function App() {
 	if(action.state.isLogged) {
 	return (
 		<div className="App">
-			<Navbar/>
+			<Navbar logout={action.logout} isLogged={action.state.isLogged} token={action.state.token}/>
 			{messageArea}
 			<Routes>
 				<Route path="/" element={<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove} />}
@@ -36,7 +36,7 @@ function App() {
 	} else {
 	return (
 		<div className="App">
-			<Navbar/>
+			<Navbar logout={action.logout} isLogged={action.state.isLogged} token={action.state.token}/>
 			{messageArea}
 			<Routes>
 				<Route path="/" element={<LoginPage register={action.register} login={action.login}/>}
