@@ -3,16 +3,29 @@ import ShoppingItem from '../models/ShoppingItem';
 
 interface State {
 	list:ShoppingItem[];
+	isLogged:boolean;
+	token:string;
+	loading:boolean;
+	error:string;
 }
 
 interface UrlRequest {
 	request:Request;
 	action:string;
 }
+
+interface Token {
+	token:string
+}
+
 const useAction = () => {
 	
 	const [state,setState] = useState<State>({
-		list:[]
+		list:[],
+		isLogged:false,
+		token:"",
+		loading:false,
+		error:""
 	})
 	
 	const [urlRequest,setUrlRequest] = useState<UrlRequest>({
@@ -20,11 +33,46 @@ const useAction = () => {
 		action:""
 	})
 	
+	//STATE HELPERS
+	
+	const saveToStorage = (state:State) => {
+		sessionStorage.setItem("state",JSON.stringify(state));
+	}
+	
+	useEffect(() => {
+		let temp = sessionStorage.getItem("state");
+		if(temp) {		
+			let state = JSON.parse(temp);
+			setState(state);
+		}
+	},[])
+	
+	const setLoading = (loading:boolean) => {
+		setState((state) => {
+			return {
+				...state,
+				loading:loading,
+				error:""
+			}
+		})
+	}
+	
+	const setError = (error:string) => {
+		setState((state) => {
+			return {
+				...state,
+				error:error
+			}
+		})
+	}
+	
 	//FETCH useEffect
 	useEffect(() => {
 		
 		const fetchData = async () => {
+			setLoading(true);
 			const response = await fetch(urlRequest.request);
+			setLoading(false);
 			if(!response) {
 				console.log("Server sent no response!");
 				return;
@@ -34,20 +82,93 @@ const useAction = () => {
 					case "getlist":
 						let temp = await response.json();
 						let list:ShoppingItem[] = temp as ShoppingItem[];
-						setState({
-							list:list
+						setState((state) => {
+							let tempState = {
+								...state,
+								list:list
+							}
+							saveToStorage(tempState);
+							return tempState;
 						})
 						return;
 					case "additem":
 					case "removeitem":
 					case "edititem":
-						getList();
+						getList(state.token);
+						return;
+					case "register":
+						setError("Register Success");
+						return;
+					case "login":
+						let temp2 = await response.json();
+						let token = temp2 as Token;
+						setState((state) => {
+							let tempState = {
+								...state,
+								isLogged:true,
+								token:token.token
+							}
+							saveToStorage(tempState);
+							return tempState;
+						})
+						getList(token.token);
+						return;
+					case "logout":
+						let logoutState = {
+							list:[],
+							token:"",
+							error:"",
+							isLogged:false,
+							loading:false
+						}
+						saveToStorage(logoutState);
+						setState(logoutState);
 						return;
 					default:
 						return;
 				}
 			} else {
-				console.log("Server responded with a status "+response.status+" "+response.statusText);
+				if(response.status === 403) {
+					let tempState = {
+						list:[],
+						token:"",
+						isLogged:false,
+						loading:false,
+						error:"Your session has expired. Logging you out!"
+					}
+					saveToStorage(tempState);
+					setState(tempState);
+					return;
+				}
+				let errorMessage = "Server responded with a status "+response.status+" "+response.statusText;
+				switch(urlRequest.action) {
+					case "register":
+						if(response.status === 409) {
+							errorMessage = "Username already in use"
+						}
+						setError(errorMessage);
+						return;
+					case "login":
+					case "getlist":
+					case "additem":
+					case "removeitem":
+					case "edititem":
+						setError(errorMessage);
+						return;
+					case "logout":
+						let tempState = {
+							list:[],
+							isLogged:false,
+							loading:false,
+							token:"",
+							error:"Server responded with an error. Logging you out!"
+						}
+						saveToStorage(tempState);
+						setState(tempState);
+						return;
+					default:
+						return;
+				}
 			}
 		}
 		
@@ -56,7 +177,7 @@ const useAction = () => {
 	},[urlRequest]);
 
 	//HELPER FUNCTIONS
-	const getList = () => {
+	const getList = (token:string) => {
 		setUrlRequest({
 			request:new Request("/api/shopping",{
 				method:"GET"
