@@ -27,12 +27,14 @@ const LoginPage:React.FC<Props> = (props:Props) => {
 		})
 	}
 	
-	const onRegister = () => {
+	const onRegister = (event:React.SyntheticEvent) => {
+		event.preventDefault();
 		let user = new User(state.username,state.password);
 		props.register(user);
 	}
 	
-	const onLogin = () => {
+	const onLogin = (event:React.SyntheticEvent) => {
+		event.preventDefault();
 		let user = new User(state.username,state.password);
 		props.login(user);
 	}
