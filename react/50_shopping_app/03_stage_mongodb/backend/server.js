@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const userModel = require("./models/user");
+const sessionModel = require("./models/session");
 
 let app = express();
 
@@ -85,7 +86,7 @@ app.post("/register",function(req,res) {
 				return res.status(409).json({"Message":"Username already in use"})
 			}
 			return res.status(500).json({"Message":"Internal server error"})
-	})
+		})
 	})
 })
 
@@ -99,30 +100,34 @@ app.post("/login",function(req,res) {
 	if(req.body.username.length < 4 || req.body.password.length < 8) {
 		return res.status(400).json({"Message":"Bad Request"});
 	}
-	for(let i=0;i<registeredUsers.length;i++) {
-		if(req.body.username === registeredUsers[i].username) {
-			bcrypt.compare(req.body.password,registeredUsers[i].password,function(err,success) {
-				if(err) {
-					console.log(err);
-					return res.status(500).json({"Message":"Internal server error"})
-				}
-				if(!success) {
-					return res.status(401).json({"Message":"Unauthorized"})
-				}
-				let token = createToken();
-				let now = Date.now();
-				let session = {
-					user:req.body.username,
-					token:token,
-					ttl:now+time_to_live_diff
-				}
-				loggedSessions.push(session);
-				return res.status(200).json({"token":token})
-			})
-			return;
+	userModel.findOne({"username":req.body.username}).then(function(user) {
+		if(!user) {
+			return res.status(401).json({"Message":"Unauthorized"});
 		}
-	}
-	return res.status(401).json({"Message":"Unauthorized"});
+		bcrypt.compare(req.body.password,user.password,function(err,success) {
+			if(err) {
+				console.log("Comparing passwords failed. Reason",err);
+				return res.status(500).json({"Message":"Internal server error"})
+			}
+			if(!success) {
+				return res.status(401).json({"Message":"Unauthorized"})
+			}
+			let token = createToken();
+			let now = Date.now();
+			let session = new sessionModel({
+				user:req.body.username,
+				ttl:now+time_to_live_diff,
+				token:token
+			})
+			session.save().then(function(session) {
+				return res.status(200).json({"token":token})
+			}).catch(function(err) {
+				return res.status(500).json({"Message":"Internal server error"})
+			})
+		})
+	}).catch(function(err) {
+		return res.status(500).json({"Message":"Internal server error"})	
+	})
 });
 
 app.post("/logout",function(req,res) {
