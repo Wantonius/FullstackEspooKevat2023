@@ -5,6 +5,7 @@ interface Props {
 	logout():void;
 	token:string;
 	isLogged:boolean;
+	username:string;
 }
 
 const Navbar:React.FC<Props> = (props:Props) => {
@@ -18,6 +19,9 @@ const Navbar:React.FC<Props> = (props:Props) => {
 				</li>
 				<li className="nav-item" style={{marginLeft:10}}>
 					<Link to="/form" className="nav-link">Add new item</Link>
+				</li>
+				<li className="nav-item" style={{marginLeft:10}}>
+					<p className="nav-link" style={{"color":"blue"}}>Logged in as {props.username} </p>
 				</li>
 				<li className="nav-item" style={{marginLeft:10}}>
 					<Link to="/" className="nav-link" onClick={props.logout}>Logout</Link>

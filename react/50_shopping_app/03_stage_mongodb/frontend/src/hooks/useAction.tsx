@@ -10,6 +10,10 @@ interface State {
 	error:string;
 }
 
+interface UserState {
+	username:string;
+}
+
 interface UrlRequest {
 	request:Request;
 	action:string;
@@ -32,6 +36,10 @@ const useAction = () => {
 	const [urlRequest,setUrlRequest] = useState<UrlRequest>({
 		request:new Request("",{}),
 		action:""
+	})
+	
+	const [userState,setUserState] = useState<UserState>({
+		username:""
 	})
 	
 	//STATE HELPERS
@@ -236,6 +244,9 @@ const useAction = () => {
 	}
 
 	const login = (user:User) => {
+		setUserState({
+			username:user.username
+		})
 		setUrlRequest({
 			request:new Request("/login",{
 				method:"POST",
@@ -258,7 +269,7 @@ const useAction = () => {
 	}
 
 	
-	return {state,getList,add,remove,edit,register,login,logout};
+	return {state,getList,add,remove,edit,register,login,logout,userState};
 }
 
 export default useAction;
