@@ -1,4 +1,5 @@
 const express = require("express");
+const itemModel = require("../models/item");
 
 let router = express.Router();
 
@@ -8,21 +9,34 @@ let id = 100;
 //REST API
 
 router.get("/shopping",function(req,res) {
-	let tempDatabase = database.filter(item => item.user === req.session.user);
-	return res.status(200).json(tempDatabase);
+	let query = {"user":req.session.user}
+	itemModel.find(query).then(function(items) {
+		return res.status(200).json(items);
+	}).catch(function(err){
+		console.log("Failed in finding items. Reason",err);
+		return res.status(500).json({"Message":"Internal server error"})
+	})
 })
 
 router.post("/shopping",function(req,res) {
-	let item = {
+	if(!req.body) {
+		return res.status(400).json({"Message":"Bad Request"})
+	}
+	if(!req.body.type) {
+		return res.status(400).json({"Message":"Bad Request"})
+	}
+	let item = new itemModel({
 		"type":req.body.type,
 		"count":req.body.count,
 		"price":req.body.price,
-		"id":id,
 		"user":req.session.user
-	}
-	id++;
-	database.push(item);
-	return res.status(201).json(item);
+	})
+	item.save().then(function(item) {
+		return res.status(201).json(item);
+	}).catch(function(err) {
+		console.log("Failed to save new item. Reason",err);
+		return res.status(500).json({"Message":"Internal server error"})
+	})
 })
 
 router.delete("/shopping/:id",function(req,res) {

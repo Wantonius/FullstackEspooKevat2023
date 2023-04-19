@@ -23,6 +23,7 @@ mongoose.connect(url).then(
 	(error) => console.log("Failed to connect to mongodb. Reason:",error)
 )
 
+mongoose.set("toJSON",{virtuals:true})
 
 const time_to_live_diff = 3600000;
 
