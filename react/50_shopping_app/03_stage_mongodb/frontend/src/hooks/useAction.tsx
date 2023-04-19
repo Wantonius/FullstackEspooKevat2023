@@ -202,7 +202,7 @@ const useAction = () => {
 		})
 	}
 	
-	const remove = (id:number) => {
+	const remove = (id:string) => {
 		setUrlRequest({
 			request:new Request("/api/shopping/"+id,{
 				method:"DELETE",

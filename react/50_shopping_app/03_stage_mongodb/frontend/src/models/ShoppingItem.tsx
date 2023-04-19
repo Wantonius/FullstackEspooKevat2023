@@ -3,9 +3,9 @@ export default class ShoppingItem {
 	type:string = "";
 	count:number = 0;
 	price:number = 0;
-	id:number = 0;
+	id:string = "";
 	
-	constructor(type:string,count:number,price:number,id:number) {
+	constructor(type:string,count:number,price:number,id:string) {
 		this.type = type;
 		this.count = count;
 		this.price = price;

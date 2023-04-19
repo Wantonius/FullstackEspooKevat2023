@@ -33,7 +33,7 @@ const ShoppingForm:React.FC<Props> = (props:Props) => {
 		if(state.type === "") {
 			return;
 		}
-		let item = new ShoppingItem(state.type,state.count,state.price,0);
+		let item = new ShoppingItem(state.type,state.count,state.price,"");
 		props.add(item);
 		setState({
 			type:"",
