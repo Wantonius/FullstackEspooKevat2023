@@ -42,21 +42,34 @@ isUserLogged = (req,res,next) => {
 	if(!req.headers.token) {
 		return res.status(403).json({"Message":"Forbidden"})
 	}
-	for(let i=0;i<loggedSessions.length;i++) {
-		if(req.headers.token === loggedSessions[i].token) {
-			let now = Date.now();
-			if(now > loggedSessions[i].ttl) {
-				loggedSessions.splice(i,1);
-				return res.status(403).json({"Message":"Forbidden"})
-			} else {
-				loggedSessions[i].ttl = now + time_to_live_diff;
-				req.session = {};
-				req.session.user = loggedSessions[i].user;
-				return next();
-			}
+	sessionModel.findOne({"token":req.headers.token}).then(function(session) {
+		if(!session) {
+			return res.status(403).json({"Message":"Forbidden"});
 		}
-	}
-	return res.status(403).json({"Message":"Forbidden"});
+		let now = Date.now();
+		if(now > session.ttl) {
+			sessionModel.deleteOne({"_id":session._id}).then(function() {
+				return res.status(403).json({"Message":"Forbidden"})
+			}).catch(function(err) {
+				console.log("Failed to remove session in isUserLogged. Reason:",err);
+				return res.status(403).json({"Message":"Forbidden"})
+			})
+		} else {
+			session.ttl = now + time_to_live_diff;
+			req.session = {};
+			req.session.user = session.user;
+			session.save().then(function() {
+				return next();
+			}).catch(function(err) {
+				console.log("Failed to update session in isUserLogged. Reason",err)
+				return next();
+			})
+		}
+		
+	}).catch(function(err){
+		console.log("Failed to find session in isUserLogged. Reason",err);
+		return res.status(403).json({"Message":"Forbidden"});
+	})
 }
 
 //LOGIN API
