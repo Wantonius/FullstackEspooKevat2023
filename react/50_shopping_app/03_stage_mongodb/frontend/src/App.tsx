@@ -11,13 +11,13 @@ function App() {
 	
 	const action = useAction();
   
-	let messageArea = <h4></h4>
+	let messageArea = <h4 style={{"height":40}}></h4>
 	
 	if(action.state.loading) {
-		messageArea = <h4>Loading ...</h4>
+		messageArea = <h4 style={{"height":40}}>Loading ...</h4>
 	}
 	if(action.state.error) {
-		messageArea = <h4>{action.state.error}</h4>
+		messageArea = <h4 style={{"height":40}}>{action.state.error}</h4>
 	}
 	if(action.state.isLogged) {
 	return (
