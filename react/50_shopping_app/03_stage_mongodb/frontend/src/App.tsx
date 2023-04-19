@@ -25,7 +25,7 @@ function App() {
 			<Navbar logout={action.logout} isLogged={action.state.isLogged} token={action.state.token} username={action.userState.username}/>
 			{messageArea}
 			<Routes>
-				<Route path="/" element={<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove} />}
+				<Route path="/" element={<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove} getList={action.getList} token={action.state.token} />}
 				/>
 				<Route path="/form" element={<ShoppingForm add={action.add} />} 
 				/>

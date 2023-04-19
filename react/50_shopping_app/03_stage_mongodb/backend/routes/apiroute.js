@@ -10,6 +10,9 @@ let id = 100;
 
 router.get("/shopping",function(req,res) {
 	let query = {"user":req.session.user}
+	if(req.query.type) {
+		query.type = req.query.type;
+	}
 	itemModel.find(query).then(function(items) {
 		return res.status(200).json(items);
 	}).catch(function(err){
@@ -26,7 +29,7 @@ router.post("/shopping",function(req,res) {
 		return res.status(400).json({"Message":"Bad Request"})
 	}
 	let item = new itemModel({
-		"type":req.body.type,
+		"type":req.body.type.toLowerCase(),
 		"count":req.body.count,
 		"price":req.body.price,
 		"user":req.session.user
@@ -56,7 +59,7 @@ router.put("/shopping/:id",function(req,res) {
 		return res.status(400).json({"Message":"Bad Request"});
 	}
 	let item = {
-		"type":req.body.type,
+		"type":req.body.type.toLowerCase(),
 		"count":req.body.count,
 		"price":req.body.price,
 		"user":req.session.user
