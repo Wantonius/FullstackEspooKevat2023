@@ -3,9 +3,6 @@ const itemModel = require("../models/item");
 
 let router = express.Router();
 
-let database = [];
-let id = 100;
-
 //REST API
 
 router.get("/shopping",function(req,res) {
