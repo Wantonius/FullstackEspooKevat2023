@@ -40,16 +40,12 @@ router.post("/shopping",function(req,res) {
 })
 
 router.delete("/shopping/:id",function(req,res) {
-	let tempId = parseInt(req.params.id,10);
-	for(let i=0; i<database.length; i++) {
-		if(database[i].id === tempId) {
-			if(database[i].user === req.session.user) {
-				database.splice(i,1)
-				return res.status(200).json({"Message":"Success"})
-			}
-		}
-	}
-	return res.status(404).json({"Message":"Not found"})
+	itemModel.deleteOne({"_id":req.params.id,"user":req.session.user}).then(function() {
+		return res.status(200).json({"Message":"Success"})
+	}).catch(function(err) {
+		console.log("Failed to remove item id "+req.params.id+". Reason:",err);
+		return res.status(500).json({"Message":"Internal server error"});
+	})
 })
 
 router.put("/shopping/:id",function(req,res) {
