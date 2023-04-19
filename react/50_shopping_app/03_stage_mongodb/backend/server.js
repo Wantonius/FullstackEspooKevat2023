@@ -78,18 +78,14 @@ app.post("/register",function(req,res) {
 			"username":req.body.username,
 			"password":hash
 		})
-		user.save(function(err,user) {
-			if(err) {
-				if(err.code === 11000) {
-					return res.status(409).json({"Message":"Username already in use"})
-				}
-				return res.status(500).json({"Message":"Internal server error"})
-			}
-			if(!user) {
-				return res.status(500).json({"Message":"Internal server error"})
-			}
+		user.save().then(function(user) {
 			return res.status(200).json({"Message":"Register success"});
-		})
+		}).catch(function(err) {
+			if(err.code === 11000) {
+				return res.status(409).json({"Message":"Username already in use"})
+			}
+			return res.status(500).json({"Message":"Internal server error"})
+	})
 	})
 })
 
