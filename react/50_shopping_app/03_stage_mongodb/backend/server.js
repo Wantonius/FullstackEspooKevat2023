@@ -23,11 +23,8 @@ mongoose.connect(url).then(
 	(error) => console.log("Failed to connect to mongodb. Reason:",error)
 )
 
-//LOGIN DATABASES
 
-let registeredUsers = [];
-let loggedSessions = [];
-const time_to_live_diff = 3600000
+const time_to_live_diff = 3600000;
 
 let port = process.env.PORT || 3001;
 
@@ -147,13 +144,12 @@ app.post("/logout",function(req,res) {
 	if(!req.headers.token) {
 		return res.status(404).json({"Message":"Not found"})
 	}
-	for(let i=0;i<loggedSessions.length;i++) {
-		if(loggedSessions[i].token === req.headers.token) {
-			loggedSessions.splice(i,1);
-			return res.status(200).json({"Message":"Logged out"})
-		}
-	}
-	return res.status(404).json({"Message":"Not found"});
+	sessionModel.deleteOne({"token":req.headers.token}).then(function() {
+		return res.status(200).json({"Message":"Logged out"})
+	}).catch(function(err) {
+		console.log("Failed to remove session in logout. Reason",err)
+		return res.status(200).json({"Message":"Logged out"})
+	})
 })
 
 app.use("/api",isUserLogged,router);
