@@ -75,6 +75,17 @@ const loginReducer:Reducer<LoginState,AnyAction> = (state = initialState,action)
 			}
 			saveToStorage(tempState);
 			return tempState;
+		case actionConstants.LOGOUT_FAILED:
+			tempState = {
+				isLogged:false,
+				loading:false,
+				token:"",
+				error:action.error
+			}
+			saveToStorage(tempState);
+			return tempState;
+		default:
+			return state;
 	}
 }
 
