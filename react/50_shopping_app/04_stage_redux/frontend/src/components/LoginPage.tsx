@@ -1,5 +1,9 @@
 import React,{useState} from 'react';
 import User from '../models/User';
+import {register,registerFailed} from '../actions/loginActions';
+import {useDispatch} from 'react-redux';
+import {ThunkDispatch} from 'redux-thunk';
+import {AnyAction} from 'redux';
 
 interface Props {
 	register(user:User):void;
@@ -18,6 +22,8 @@ const LoginPage:React.FC<Props> = (props:Props) => {
 		password:""
 	}) 
 	
+	const dispatch:ThunkDispatch<any,any,AnyAction> = useDispatch();
+	
 	const onChange = (event:React.ChangeEvent<HTMLInputElement>) => {
 		setState((state) => {
 			return {
@@ -28,12 +34,20 @@ const LoginPage:React.FC<Props> = (props:Props) => {
 	}
 	
 	const onRegister = (event:React.SyntheticEvent) => {
+		if(state.username.length < 4 || state.password.length < 8) {
+			dispatch(registerFailed("Username must be atleast 4 and password atleast 8 characters long"));
+			return;
+		}
 		event.preventDefault();
 		let user = new User(state.username,state.password);
-		props.register(user);
+		dispatch(register(user));
 	}
 	
 	const onLogin = (event:React.SyntheticEvent) => {
+		if(state.username.length < 4 || state.password.length < 8) {
+			dispatch(registerFailed("Username must be atleast 4 and password atleast 8 characters long"));
+			return;
+		}
 		event.preventDefault();
 		let user = new User(state.username,state.password);
 		props.login(user);
