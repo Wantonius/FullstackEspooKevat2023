@@ -7,24 +7,27 @@ import Navbar from './components/Navbar';
 import LoginPage from './components/LoginPage';
 import {Routes,Route,Navigate} from 'react-router-dom'
 import {useSelector} from 'react-redux';
-import {LoginState} from './types/states';
+import {AppState} from './types/states';
 function App() {
 	
 	const action = useAction();
 	
-	const stateSelector = (state:LoginState) => state;
+	const stateSelector = (state:AppState) => state;
   
 	const state = useSelector(stateSelector);
   
 	let messageArea = <h4 style={{"height":40}}></h4>
 	
-	if(state.loading) {
+	if(state.login.loading) {
 		messageArea = <h4 style={{"height":40}}>Loading ...</h4>
 	}
-	if(state.error) {
-		messageArea = <h4 style={{"height":40}}>{state.error}</h4>
+	if(state.shopping.error) {
+		messageArea = <h4 style={{"height":40}}>{state.shopping.error}</h4>
 	}
-	if(state.isLogged) {
+	if(state.login.error) {
+		messageArea = <h4 style={{"height":40}}>{state.login.error}</h4>
+	}
+	if(state.login.isLogged) {
 	return (
 		<div className="App">
 			<Navbar />

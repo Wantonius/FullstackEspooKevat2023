@@ -5,12 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
 import loginReducer from './reducers/loginReducer';
-import {createStore,Store,AnyAction,applyMiddleware} from 'redux'
+import shoppingReducer from './reducers/shoppingReducer';
+import {createStore,Store,AnyAction,applyMiddleware,combineReducers} from 'redux'
 import thunk from 'redux-thunk';
 import {Provider} from 'react-redux';
-import {LoginState} from './types/states';
+import {AppState} from './types/states';
 
-const store:Store<LoginState,AnyAction> = createStore(loginReducer,applyMiddleware(thunk));
+const rootReducer = combineReducers<AppState>({
+	shopping:shoppingReducer,
+	login:loginReducer
+})
+
+const store:Store<AppState,AnyAction> = createStore(rootReducer,applyMiddleware(thunk));
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
