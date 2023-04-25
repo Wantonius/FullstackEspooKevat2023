@@ -22,6 +22,47 @@ export const getList = (token:string,search:string) => {
 	}
 }
 
+export const add = (token:string,item:ShoppingItem) => {
+	return (dispatch:ThunkDispatch<any,any,AnyAction>) => {
+		let request = new Request("/api/shopping",{
+			method:"POST",
+			headers:{
+				"Content-Type":"application/json",
+				"token":token
+			},
+			body:JSON.stringify(item)
+		})
+		handleFetch(request,"additem",dispatch,token);
+	}
+}
+
+export const remove = (token:string,id:string) => {
+	return (dispatch:ThunkDispatch<any,any,AnyAction>) => {
+		let request = new Request("/api/shopping/"+id,{
+			method:"DELETE",
+			headers:{
+				"token":token
+			}
+		})
+		handleFetch(request,"removeitem",dispatch,token);
+	}
+}
+
+export const edit = (token:string,item:ShoppingItem) => {
+	return (dispatch:ThunkDispatch<any,any,AnyAction>) => {
+		let request = new Request("/api/shopping/"+item.id,{
+			method:"PUT",
+			headers:{
+				"Content-Type":"application/json",
+				"token":token
+			},
+			body:JSON.stringify(item)
+		})
+		handleFetch(request,"edititem",dispatch,token);
+	}
+}
+
+
 const handleFetch = async (request:Request,act:string,dispatch:ThunkDispatch<any,any,AnyAction>,token:string) => {
 	dispatch(loading());
 	const response = await fetch(request);
@@ -41,6 +82,18 @@ const handleFetch = async (request:Request,act:string,dispatch:ThunkDispatch<any
 				let list = temp as ShoppingItem[];
 				dispatch(fetchListSuccess(list));
 				return;
+			case "additem":
+				dispatch(fetchItemSuccess(actionConstants.ADD_ITEM_SUCCESS));
+				dispatch(getList(token,""));
+				return;
+			case "removeitem":
+				dispatch(fetchItemSuccess(actionConstants.REMOVE_ITEM_SUCCESS));
+				dispatch(getList(token,""));
+				return;
+			case "edititem":
+				dispatch(fetchItemSuccess(actionConstants.EDIT_ITEM_SUCCESS));
+				dispatch(getList(token,""));
+				return;
 			default:
 				return;
 		}
@@ -53,6 +106,15 @@ const handleFetch = async (request:Request,act:string,dispatch:ThunkDispatch<any
 		switch(act) {
 			case "getlist":
 				dispatch(fetchListFailed("Fetching shopping info failed. "+errorMessage));
+				return;
+			case "additem":	
+				dispatch(fetchItemFailed(actionConstants.ADD_ITEM_FAILED,"Failed to add new item. "+errorMessage));
+				return;
+			case "removeitem":	
+				dispatch(fetchItemFailed(actionConstants.REMOVE_ITEM_FAILED,"Failed to remove item. "+errorMessage));
+				return;
+			case "edititem":	
+				dispatch(fetchItemFailed(actionConstants.EDIT_ITEM_FAILED,"Failed to edit item."+errorMessage));
 				return;
 			default:
 				return;
@@ -72,6 +134,19 @@ const fetchListSuccess = (list:ShoppingItem[]) => {
 const fetchListFailed = (error:string) => {
 	return {
 		type:actionConstants.FETCH_LIST_FAILED,
+		error:error
+	}
+}
+
+const fetchItemSuccess = (type:string) => {
+	return {
+		type:type
+	}
+}
+
+const fetchItemFailed = (type:string,error:string) => {
+	return {
+		type:type,
 		error:error
 	}
 }
