@@ -1,7 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+import {useSelector,useDispatch} from 'react-redux';
+import {logout} from '../actions/loginActions';
 import {LoginState} from '../types/states';
+import {ThunkDispatch} from 'redux-thunk';
+import {AnyAction} from 'redux';
 interface Props {
 	logout():void;
 	token:string;
@@ -10,6 +13,8 @@ interface Props {
 }
 
 const Navbar:React.FC<Props> = (props:Props) => {
+	
+	const dispatch:ThunkDispatch<any,any,AnyAction> = useDispatch();
 	
 	const stateSelector = (state:LoginState) => state;
 	const state = useSelector(stateSelector);
@@ -29,7 +34,7 @@ const Navbar:React.FC<Props> = (props:Props) => {
 					<p className="nav-link" style={{"color":"blue"}}>Logged in as {props.username} </p>
 				</li>
 				<li className="nav-item" style={{marginLeft:10}}>
-					<Link to="/" className="nav-link" onClick={props.logout}>Logout</Link>
+					<Link to="/" className="nav-link" onClick={() => dispatch(logout(state.token))}>Logout</Link>
 				</li>
 			</ul>
 		</nav>

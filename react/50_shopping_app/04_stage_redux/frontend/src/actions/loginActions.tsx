@@ -30,6 +30,16 @@ export const login = (user:User) => {
 	}
 }
 
+export const logout = (token:string) => {
+	return (dispatch:ThunkDispatch<any,any,AnyAction>) => {
+		let request = new Request("/logout",{
+			method:"POST",
+			headers:{"Content-Type":"application/json",
+					"token":token}
+		})
+		handleLogin(request,"logout",dispatch);
+	}
+}
 
 const handleLogin = async (request:Request,act:string,dispatch:ThunkDispatch<any,any,AnyAction>) => {
 	dispatch(loading());
@@ -54,6 +64,9 @@ const handleLogin = async (request:Request,act:string,dispatch:ThunkDispatch<any
 				dispatch(loginSuccess(data.token));
 				//TODO: getList(data.token)
 				return;
+			case "logout":
+				dispatch(logoutSuccess());
+				return;
 			default:
 				return;
 		}
@@ -69,6 +82,9 @@ const handleLogin = async (request:Request,act:string,dispatch:ThunkDispatch<any
 				return;
 			case "login":
 				dispatch(loginFailed("Login failed. "+errorMessage))
+				return;
+			case "logout":
+				dispatch(logoutFailed("Server responded with an error. Logging you out!"));
 				return;
 			default:
 				return;
@@ -114,6 +130,19 @@ const loginSuccess = (token:string) => {
 const loginFailed = (error:string) => {
 	return {
 		type:actionConstants.LOGIN_FAILED,
+		error:error
+	}
+}
+
+const logoutSuccess = () => {
+	return {
+		type:actionConstants.LOGOUT_SUCCESS
+	}
+}
+
+export const logoutFailed = (error:string) => {
+	return {
+		type:actionConstants.LOGOUT_FAILED,
 		error:error
 	}
 }
