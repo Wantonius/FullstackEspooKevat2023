@@ -3,19 +3,11 @@ import ShoppingItem from '../models/ShoppingItem';
 import Row from './Row';
 import RemoveRow from './RemoveRow';
 import EditRow from './EditRow';
-import {getList} from '../actions/shoppingActions';
+import {getList,remove,edit} from '../actions/shoppingActions';
 import {useSelector,useDispatch} from 'react-redux';
 import {ThunkDispatch} from 'redux-thunk';
 import {AnyAction} from 'redux';
 import {AppState} from '../types/states';
-
-interface Props {
-	list:ShoppingItem[];
-	remove(id:string):void;
-	edit(item:ShoppingItem):void;
-	getList(token:string,search?:string):void;
-	token:string;
-}
 
 interface State {
 	removeIndex:number;
@@ -26,7 +18,7 @@ interface SearchState {
 	search:string;
 }
 
-const ShoppingList:React.FC<Props> = (props:Props) => {
+const ShoppingList:React.FC<{}> = (props) => {
 	
 	const [state,setState] = useState<State>({
 		removeIndex:-1,
@@ -64,12 +56,12 @@ const ShoppingList:React.FC<Props> = (props:Props) => {
 	}
 	
 	const removeItem = (id:string) => {
-		props.remove(id);
+		dispatch(remove(appState.login.token,id));
 		changeMode(0,"cancel");
 	}
 	
 	const editItem = (item:ShoppingItem) => {
-		props.edit(item);
+		dispatch(edit(appState.login.token,item));
 		changeMode(0,"cancel");
 	}
 	
