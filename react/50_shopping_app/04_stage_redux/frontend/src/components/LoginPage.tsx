@@ -5,17 +5,13 @@ import {useDispatch} from 'react-redux';
 import {ThunkDispatch} from 'redux-thunk';
 import {AnyAction} from 'redux';
 
-interface Props {
-	register(user:User):void;
-	login(user:User):void;
-}
 
 interface State {
 	username:string;
 	password:string;
 }
 
-const LoginPage:React.FC<Props> = (props:Props) => {
+const LoginPage:React.FC<{}> = (props) => {
 	
 	const [state,setState] = useState<State>({
 		username:"",

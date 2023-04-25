@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-
+import {useSelector} from 'react-redux';
+import {LoginState} from '../types/states';
 interface Props {
 	logout():void;
 	token:string;
@@ -9,7 +10,11 @@ interface Props {
 }
 
 const Navbar:React.FC<Props> = (props:Props) => {
-	if(props.isLogged) {
+	
+	const stateSelector = (state:LoginState) => state;
+	const state = useSelector(stateSelector);
+	
+	if(state.isLogged) {
 	return(
 		<nav className="navbar navbar-expand-lg navbar-light bg-light">
 			<p className="navbar-brand" style={{marginLeft:10}}>Shopping App</p>
