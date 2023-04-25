@@ -1,6 +1,8 @@
 import {useState,useEffect} from 'react';
 import ShoppingItem from '../models/ShoppingItem';
 import User from '../models/User';
+import {useSelector} from 'react-redux';
+import {LoginState} from '../types/states';
 
 interface State {
 	list:ShoppingItem[];

@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import User from '../models/User';
-import {register,registerFailed} from '../actions/loginActions';
+import {register,registerFailed,login} from '../actions/loginActions';
 import {useDispatch} from 'react-redux';
 import {ThunkDispatch} from 'redux-thunk';
 import {AnyAction} from 'redux';
@@ -50,7 +50,7 @@ const LoginPage:React.FC<Props> = (props:Props) => {
 			return;
 		}
 		let user = new User(state.username,state.password);
-		props.login(user);
+		dispatch(login(user));
 	}
 	
 	return(

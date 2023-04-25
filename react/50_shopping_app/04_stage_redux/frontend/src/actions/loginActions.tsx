@@ -3,6 +3,10 @@ import User from '../models/User';
 import {ThunkDispatch} from 'redux-thunk';
 import {AnyAction} from 'redux';
 
+interface Token {
+	token:string;
+}
+
 //ASYNC THUNKS
 export const register = (user:User) => {
 	return (dispatch:ThunkDispatch<any,any,AnyAction>) => {
@@ -14,6 +18,18 @@ export const register = (user:User) => {
 		handleLogin(request,"register",dispatch);
 	}
 }
+
+export const login = (user:User) => {
+	return (dispatch:ThunkDispatch<any,any,AnyAction>) => {
+		let request = new Request("/login",{
+			method:"POST",
+			headers:{"Content-Type":"application/json"},
+			body:JSON.stringify(user)
+		})
+		handleLogin(request,"login",dispatch);
+	}
+}
+
 
 const handleLogin = async (request:Request,act:string,dispatch:ThunkDispatch<any,any,AnyAction>) => {
 	dispatch(loading());
@@ -28,6 +44,16 @@ const handleLogin = async (request:Request,act:string,dispatch:ThunkDispatch<any
 			case "register":
 				dispatch(registerSuccess());
 				return;
+			case "login":
+				let temp = await response.json();
+				if(!temp) {
+					dispatch(loginFailed("Failed to parse login information. Try again later."))
+					return;
+				}
+				let data = temp as Token;
+				dispatch(loginSuccess(data.token));
+				//TODO: getList(data.token)
+				return;
 			default:
 				return;
 		}
@@ -40,6 +66,9 @@ const handleLogin = async (request:Request,act:string,dispatch:ThunkDispatch<any
 					return;
 				}
 				dispatch(registerFailed("Register failed. "+errorMessage));
+				return;
+			case "login":
+				dispatch(loginFailed("Login failed. "+errorMessage))
 				return;
 			default:
 				return;
@@ -71,6 +100,20 @@ const registerSuccess = () => {
 export const registerFailed = (error:string) => {
 	return {
 		type:actionConstants.REGISTER_FAILED,
+		error:error
+	}
+}
+
+const loginSuccess = (token:string) => {
+	return {
+		type:actionConstants.LOGIN_SUCCESS,
+		token:token
+	}
+}
+
+const loginFailed = (error:string) => {
+	return {
+		type:actionConstants.LOGIN_FAILED,
 		error:error
 	}
 }
