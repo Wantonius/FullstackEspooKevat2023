@@ -11,7 +11,8 @@ const getInitialState = ():LoginState => {
 			isLogged:false,
 			loading:false,
 			token:"",
-			error:""
+			error:"",
+			username:""
 		}
 	}
 }
@@ -29,7 +30,8 @@ const loginReducer:Reducer<LoginState,AnyAction> = (state = initialState,action)
 		isLogged:false,
 		loading:false,
 		token:"",
-		error:""
+		error:"",
+		username:""
 	}
 	switch(action.type) {
 		case actionConstants.LOADING:
@@ -71,7 +73,8 @@ const loginReducer:Reducer<LoginState,AnyAction> = (state = initialState,action)
 				isLogged:false,
 				loading:false,
 				token:"",
-				error:""
+				error:"",
+				username:""
 			}
 			saveToStorage(tempState);
 			return tempState;
@@ -80,7 +83,15 @@ const loginReducer:Reducer<LoginState,AnyAction> = (state = initialState,action)
 				isLogged:false,
 				loading:false,
 				token:"",
-				error:action.error
+				error:action.error,
+				username:""
+			}
+			saveToStorage(tempState);
+			return tempState;
+		case actionConstants.SET_USERNAME:
+			tempState = {
+				...state,
+				username:action.username
 			}
 			saveToStorage(tempState);
 			return tempState;

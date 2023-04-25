@@ -5,14 +5,9 @@ import {logout} from '../actions/loginActions';
 import {LoginState} from '../types/states';
 import {ThunkDispatch} from 'redux-thunk';
 import {AnyAction} from 'redux';
-interface Props {
-	logout():void;
-	token:string;
-	isLogged:boolean;
-	username:string;
-}
 
-const Navbar:React.FC<Props> = (props:Props) => {
+
+const Navbar:React.FC<{}> = (props) => {
 	
 	const dispatch:ThunkDispatch<any,any,AnyAction> = useDispatch();
 	
@@ -31,7 +26,7 @@ const Navbar:React.FC<Props> = (props:Props) => {
 					<Link to="/form" className="nav-link">Add new item</Link>
 				</li>
 				<li className="nav-item" style={{marginLeft:10}}>
-					<p className="nav-link" style={{"color":"blue"}}>Logged in as {props.username} </p>
+					<p className="nav-link" style={{"color":"blue"}}>Logged in as {state.username} </p>
 				</li>
 				<li className="nav-item" style={{marginLeft:10}}>
 					<Link to="/" className="nav-link" onClick={() => dispatch(logout(state.token))}>Logout</Link>

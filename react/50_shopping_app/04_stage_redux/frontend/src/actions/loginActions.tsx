@@ -21,6 +21,7 @@ export const register = (user:User) => {
 
 export const login = (user:User) => {
 	return (dispatch:ThunkDispatch<any,any,AnyAction>) => {
+		dispatch(setUsername(user.username));
 		let request = new Request("/login",{
 			method:"POST",
 			headers:{"Content-Type":"application/json"},
@@ -144,5 +145,12 @@ export const logoutFailed = (error:string) => {
 	return {
 		type:actionConstants.LOGOUT_FAILED,
 		error:error
+	}
+}
+
+const setUsername = (username:string) => {
+	return {
+		type:actionConstants.SET_USERNAME,
+		username:username
 	}
 }

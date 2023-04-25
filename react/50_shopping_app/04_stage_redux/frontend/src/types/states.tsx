@@ -3,4 +3,5 @@ export interface LoginState {
 	loading:boolean;
 	token:string;
 	error:string;
+	username:string;
 }

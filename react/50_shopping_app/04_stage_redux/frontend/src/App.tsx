@@ -27,7 +27,7 @@ function App() {
 	if(state.isLogged) {
 	return (
 		<div className="App">
-			<Navbar logout={action.logout} isLogged={action.state.isLogged} token={action.state.token} username={action.userState.username}/>
+			<Navbar />
 			{messageArea}
 			<Routes>
 				<Route path="/" element={<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove} getList={action.getList} token={action.state.token} />}
@@ -41,7 +41,7 @@ function App() {
 	} else {
 	return (
 		<div className="App">
-			<Navbar logout={action.logout} isLogged={action.state.isLogged} token={action.state.token} username={action.userState.username}/>
+			<Navbar />
 			{messageArea}
 			<Routes>
 				<Route path="/" element={<LoginPage />}
