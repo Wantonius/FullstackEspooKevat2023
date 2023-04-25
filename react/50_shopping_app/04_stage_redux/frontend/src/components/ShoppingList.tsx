@@ -3,6 +3,11 @@ import ShoppingItem from '../models/ShoppingItem';
 import Row from './Row';
 import RemoveRow from './RemoveRow';
 import EditRow from './EditRow';
+import {getList} from '../actions/shoppingActions';
+import {useSelector,useDispatch} from 'react-redux';
+import {ThunkDispatch} from 'redux-thunk';
+import {AnyAction} from 'redux';
+import {AppState} from '../types/states';
 
 interface Props {
 	list:ShoppingItem[];
@@ -31,6 +36,11 @@ const ShoppingList:React.FC<Props> = (props:Props) => {
 	const [search,setSearch] = useState<SearchState>({
 		search:""
 	})
+	
+	const stateSelector = (state:AppState) => state;
+	const appState = useSelector(stateSelector);
+	
+	const dispatch:ThunkDispatch<any,any,AnyAction> = useDispatch();
 	
 	const changeMode = (index:number,mode:string) => {
 		if(mode === "remove") {
@@ -71,10 +81,10 @@ const ShoppingList:React.FC<Props> = (props:Props) => {
 	
 	const searchByType = (event:React.SyntheticEvent) => {
 		event.preventDefault();
-		props.getList(props.token,search.search);
+		dispatch(getList(appState.login.token,search.search));
 	}
 	
-	const shoppingItems = props.list.map((item,index) => {
+	const shoppingItems = appState.shopping.list.map((item,index) => {
 		if(state.removeIndex === index) {
 			return (
 			<RemoveRow key={item.id} item={item} changeMode={changeMode} removeItem={removeItem}/>
