@@ -13,6 +13,12 @@ function App() {
 	const appState = useAppState();
 	
 	const action = useAction();
+	
+	useEffect(() => {
+		if(appState.isLogged) {
+			action.getList(appState.token);
+		}
+	},[appState.isLogged])
   
 	let messageArea = <h4 style={{"height":40}}></h4>
 	
