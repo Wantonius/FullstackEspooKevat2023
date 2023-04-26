@@ -6,28 +6,31 @@ import ShoppingList from './components/ShoppingList';
 import Navbar from './components/Navbar';
 import LoginPage from './components/LoginPage';
 import {Routes,Route,Navigate} from 'react-router-dom'
+import useAppState from './hooks/useAppState';
 
 function App() {
+	
+	const appState = useAppState();
 	
 	const action = useAction();
   
 	let messageArea = <h4 style={{"height":40}}></h4>
 	
-	if(action.state.loading) {
+	if(appState.loading) {
 		messageArea = <h4 style={{"height":40}}>Loading ...</h4>
 	}
-	if(action.state.error) {
-		messageArea = <h4 style={{"height":40}}>{action.state.error}</h4>
+	if(appState.error) {
+		messageArea = <h4 style={{"height":40}}>{appState.error}</h4>
 	}
-	if(action.state.isLogged) {
+	if(appState.isLogged) {
 	return (
 		<div className="App">
-			<Navbar logout={action.logout} isLogged={action.state.isLogged} token={action.state.token} username={action.userState.username}/>
+			<Navbar />
 			{messageArea}
 			<Routes>
-				<Route path="/" element={<ShoppingList list={action.state.list} edit={action.edit} remove={action.remove} getList={action.getList} token={action.state.token} />}
+				<Route path="/" element={<ShoppingList  />}
 				/>
-				<Route path="/form" element={<ShoppingForm add={action.add} />} 
+				<Route path="/form" element={<ShoppingForm  />} 
 				/>
 				<Route path="*" element={<Navigate to="/"/>}/>
 			</Routes>
@@ -36,10 +39,10 @@ function App() {
 	} else {
 	return (
 		<div className="App">
-			<Navbar logout={action.logout} isLogged={action.state.isLogged} token={action.state.token} username={action.userState.username}/>
+			<Navbar />
 			{messageArea}
 			<Routes>
-				<Route path="/" element={<LoginPage register={action.register} login={action.login}/>}
+				<Route path="/" element={<LoginPage />}
 				/>
 				<Route path="*" element={<Navigate to="/"/>}/>
 			</Routes>

@@ -1,18 +1,9 @@
-import {useState,useEffect} from 'react';
+import {useState,useEffect,useContext} from 'react';
 import ShoppingItem from '../models/ShoppingItem';
 import User from '../models/User';
-
-interface State {
-	list:ShoppingItem[];
-	isLogged:boolean;
-	token:string;
-	loading:boolean;
-	error:string;
-}
-
-interface UserState {
-	username:string;
-}
+import useAppState from './useAppState';
+import ActionContext from '../context/ActionContext';
+import * as actionConstants from '../types/actionConstants';
 
 interface UrlRequest {
 	request:Request;
@@ -25,67 +16,33 @@ interface Token {
 
 const useAction = () => {
 	
-	const [state,setState] = useState<State>({
-		list:[],
-		isLogged:false,
-		token:"",
-		loading:false,
-		error:""
-	})
+	const {dispatch} = useContext(ActionContext);
 	
 	const [urlRequest,setUrlRequest] = useState<UrlRequest>({
 		request:new Request("",{}),
 		action:""
 	})
-	
-	const [userState,setUserState] = useState<UserState>({
-		username:""
-	})
-	
-	//STATE HELPERS
-	
-	const saveToStorage = (state:State) => {
-		sessionStorage.setItem("state",JSON.stringify(state));
-	}
-	
-	useEffect(() => {
-		let temp = sessionStorage.getItem("state");
-		if(temp) {		
-			let state = JSON.parse(temp);
-			setState(state);
-		}
-	},[])
-	
-	const setLoading = (loading:boolean) => {
-		setState((state) => {
-			return {
-				...state,
-				loading:loading,
-				error:""
-			}
-		})
-	}
-	
-	const setError = (error:string) => {
-		setState((state) => {
-			let tempState = {
-				...state,
-				error:error
-			}
-			saveToStorage(tempState);
-			return tempState;
-		})
-	}
+
+	const appState = useAppState();
 	
 	//FETCH useEffect
 	useEffect(() => {
 		
 		const fetchData = async () => {
-			setLoading(true);
+			dispatch({
+				type:actionConstants.LOADING,
+				payload:""
+			})
 			const response = await fetch(urlRequest.request);
-			setLoading(false);
+			dispatch({
+				type:actionConstants.STOP_LOADING,
+				payload:""
+			})
 			if(!response) {
-				console.log("Server sent no response!");
+				dispatch({
+					type:actionConstants.LOGOUT_FAILED,
+					payload:"Server never responded. Logging you out!"
+				})
 				return;
 			}
 			if(response.ok) {
@@ -93,62 +50,61 @@ const useAction = () => {
 					case "getlist":
 						let temp = await response.json();
 						let list:ShoppingItem[] = temp as ShoppingItem[];
-						setState((state) => {
-							let tempState = {
-								...state,
-								list:list
-							}
-							saveToStorage(tempState);
-							return tempState;
+						dispatch({
+							type:actionConstants.FETCH_LIST_SUCCESS,
+							payload:list
 						})
 						return;
 					case "additem":
+						dispatch({
+							type:actionConstants.ADD_ITEM_SUCCESS,
+							payload:""
+						})
+						getList(appState.token);
+						return;
 					case "removeitem":
+						dispatch({
+							type:actionConstants.REMOVE_ITEM_SUCCESS,
+							payload:""
+						})
+						getList(appState.token);
+						return;
 					case "edititem":
-						getList(state.token);
+						dispatch({
+							type:actionConstants.EDIT_ITEM_SUCCESS,
+							payload:""
+						})
+						getList(appState.token);
 						return;
 					case "register":
-						setError("Register Success");
+						dispatch({
+							type:actionConstants.REGISTER_SUCCESS,
+							payload:"Register success"
+						})						
 						return;
 					case "login":
 						let temp2 = await response.json();
 						let token = temp2 as Token;
-						setState((state) => {
-							let tempState = {
-								...state,
-								isLogged:true,
-								token:token.token
-							}
-							saveToStorage(tempState);
-							return tempState;
+						dispatch({
+							type:actionConstants.LOGIN_SUCCESS,
+							payload:token.token
 						})
-						getList(token.token);
 						return;
 					case "logout":
-						let logoutState = {
-							list:[],
-							token:"",
-							error:"",
-							isLogged:false,
-							loading:false
-						}
-						saveToStorage(logoutState);
-						setState(logoutState);
+						dispatch({
+							type:actionConstants.LOGOUT_SUCCESS,
+							payload:""
+						})
 						return;
 					default:
 						return;
 				}
 			} else {
 				if(response.status === 403) {
-					let tempState = {
-						list:[],
-						token:"",
-						isLogged:false,
-						loading:false,
-						error:"Your session has expired. Logging you out!"
-					}
-					saveToStorage(tempState);
-					setState(tempState);
+					dispatch({
+						type:actionConstants.LOGOUT_FAILED,
+						payload:"Your session has expired. Logging you out."
+					})
 					return;
 				}
 				let errorMessage = "Server responded with a status "+response.status+" "+response.statusText;
@@ -157,25 +113,46 @@ const useAction = () => {
 						if(response.status === 409) {
 							errorMessage = "Username already in use"
 						}
-						setError(errorMessage);
+						dispatch({
+							type:actionConstants.REGISTER_FAILED,
+							payload:errorMessage
+						})
 						return;
 					case "login":
+						dispatch({
+							type:actionConstants.LOGIN_FAILED,
+							payload:errorMessage
+						})
+						return;
 					case "getlist":
+						dispatch({
+							type:actionConstants.FETCH_LIST_FAILED,
+							payload:errorMessage
+						})
+						return;
 					case "additem":
+						dispatch({
+							type:actionConstants.ADD_ITEM_FAILED,
+							payload:errorMessage
+						})
+						return;
 					case "removeitem":
+						dispatch({
+							type:actionConstants.REMOVE_ITEM_FAILED,
+							payload:errorMessage
+						})
+						return
 					case "edititem":
-						setError(errorMessage);
+						dispatch({
+							type:actionConstants.EDIT_ITEM_FAILED,
+							payload:errorMessage
+						})
 						return;
 					case "logout":
-						let tempState = {
-							list:[],
-							isLogged:false,
-							loading:false,
-							token:"",
-							error:"Server responded with an error. Logging you out!"
-						}
-						saveToStorage(tempState);
-						setState(tempState);
+						dispatch({
+							type:actionConstants.LOGOUT_FAILED,
+							payload:errorMessage
+						})
 						return;
 					default:
 						return;
@@ -207,7 +184,7 @@ const useAction = () => {
 			request:new Request("/api/shopping",{
 				method:"POST",
 				headers:{"Content-Type":"application/json",
-						"token":state.token},
+						"token":appState.token},
 				body:JSON.stringify(item)
 			}),
 			action:"additem"
@@ -218,7 +195,7 @@ const useAction = () => {
 		setUrlRequest({
 			request:new Request("/api/shopping/"+id,{
 				method:"DELETE",
-				headers:{"token":state.token}
+				headers:{"token":appState.token}
 			}),
 			action:"removeitem"
 		})
@@ -229,7 +206,7 @@ const useAction = () => {
 			request:new Request("/api/shopping/"+item.id,{
 				method:"PUT",
 				headers:{"Content-Type":"application/json",
-						"token":state.token},
+						"token":appState.token},
 				body:JSON.stringify(item)
 			}),
 			action:"edititem"
@@ -248,8 +225,9 @@ const useAction = () => {
 	}
 
 	const login = (user:User) => {
-		setUserState({
-			username:user.username
+		dispatch({
+			type:actionConstants.SET_USERNAME,
+			payload:user.username
 		})
 		setUrlRequest({
 			request:new Request("/login",{
@@ -266,14 +244,14 @@ const useAction = () => {
 			request:new Request("/logout",{
 				method:"POST",
 				headers:{"Content-Type":"application/json",
-						"token":state.token}
+						"token":appState.token}
 			}),
 			action:"logout"
 		})
 	}
 
 	
-	return {state,getList,add,remove,edit,register,login,logout,userState};
+	return {getList,add,remove,edit,register,login,logout};
 }
 
 export default useAction;

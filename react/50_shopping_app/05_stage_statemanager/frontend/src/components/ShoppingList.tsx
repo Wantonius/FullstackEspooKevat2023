@@ -3,14 +3,9 @@ import ShoppingItem from '../models/ShoppingItem';
 import Row from './Row';
 import RemoveRow from './RemoveRow';
 import EditRow from './EditRow';
+import useAppState from '../hooks/useAppState';
+import useAction from '../hooks/useAction';
 
-interface Props {
-	list:ShoppingItem[];
-	remove(id:string):void;
-	edit(item:ShoppingItem):void;
-	getList(token:string,search?:string):void;
-	token:string;
-}
 
 interface State {
 	removeIndex:number;
@@ -21,12 +16,15 @@ interface SearchState {
 	search:string;
 }
 
-const ShoppingList:React.FC<Props> = (props:Props) => {
+const ShoppingList:React.FC<{}> = (props) => {
 	
 	const [state,setState] = useState<State>({
 		removeIndex:-1,
 		editIndex:-1
 	})
+	
+	const action = useAction();
+	const appState = useAppState();
 	
 	const [search,setSearch] = useState<SearchState>({
 		search:""
@@ -54,12 +52,12 @@ const ShoppingList:React.FC<Props> = (props:Props) => {
 	}
 	
 	const removeItem = (id:string) => {
-		props.remove(id);
+		action.remove(id);
 		changeMode(0,"cancel");
 	}
 	
 	const editItem = (item:ShoppingItem) => {
-		props.edit(item);
+		action.edit(item);
 		changeMode(0,"cancel");
 	}
 	
@@ -71,10 +69,10 @@ const ShoppingList:React.FC<Props> = (props:Props) => {
 	
 	const searchByType = (event:React.SyntheticEvent) => {
 		event.preventDefault();
-		props.getList(props.token,search.search);
+		action.getList(appState.token,search.search);
 	}
 	
-	const shoppingItems = props.list.map((item,index) => {
+	const shoppingItems = appState.list.map((item,index) => {
 		if(state.removeIndex === index) {
 			return (
 			<RemoveRow key={item.id} item={item} changeMode={changeMode} removeItem={removeItem}/>

@@ -1,22 +1,20 @@
 import React,{useState} from 'react';
 import User from '../models/User';
-
-interface Props {
-	register(user:User):void;
-	login(user:User):void;
-}
+import useAction from '../hooks/useAction'
 
 interface State {
 	username:string;
 	password:string;
 }
 
-const LoginPage:React.FC<Props> = (props:Props) => {
+const LoginPage:React.FC<{}> = (props) => {
 	
 	const [state,setState] = useState<State>({
 		username:"",
 		password:""
 	}) 
+	
+	const action = useAction();
 	
 	const onChange = (event:React.ChangeEvent<HTMLInputElement>) => {
 		setState((state) => {
@@ -30,13 +28,13 @@ const LoginPage:React.FC<Props> = (props:Props) => {
 	const onRegister = (event:React.SyntheticEvent) => {
 		event.preventDefault();
 		let user = new User(state.username,state.password);
-		props.register(user);
+		action.register(user);
 	}
 	
 	const onLogin = (event:React.SyntheticEvent) => {
 		event.preventDefault();
 		let user = new User(state.username,state.password);
-		props.login(user);
+		action.login(user);
 	}
 	
 	return(
