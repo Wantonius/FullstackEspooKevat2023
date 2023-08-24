@@ -14,7 +14,7 @@ const ShoppingForm = (props) => {
 			...state,
 			id:0
 		}
-		props.addToList(item);
+		props.addItem(item);
 		setState({
 			type:"",
 			count:"",

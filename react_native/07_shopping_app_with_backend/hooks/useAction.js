@@ -61,6 +61,57 @@ const useAction = () => {
 							}
 						})
 						return;
+					case "login":
+						const data = await response.json();
+						if(!data) {
+							setState((state) => {
+								return {
+									...state,
+									error:"Could not parse login information"
+								}
+							})
+							return;
+						}
+						setState({
+							list:[],
+							isLogged:true,
+							loading:false,
+							error:"",
+							token:data.token
+						})
+						getList(data.token)
+						return;
+					case "logout":
+						setState({
+							list:[],
+							isLogged:false,
+							loading:false,
+							error:"",
+							token:""
+						})
+						return;
+					case "additem":
+					case "removeitem":
+						getList();
+						return;
+					case "getlist":
+						const list = await response.json();
+						if(!list) {
+							setState((state) => {
+								return {
+									...state,
+									error:"Failed to parse list information"
+								}
+							})
+							return;
+						}
+						setState((state) => {
+							return {
+								...state,
+								list:list
+							}
+						})
+						return;
 					default:
 						return;
 				}
@@ -94,6 +145,26 @@ const useAction = () => {
 							})
 						}
 						return;
+					case "logout":
+						setState({
+							list:[],
+							isLogged:false,
+							token:"",
+							loading:false,
+							error:""
+						})
+						return;
+					case "login":
+					case "getlist":
+					case "additem":
+					case "removeitem":
+						setState((state) => {
+							return {
+								...state,
+								error:errorMessage
+							}
+						})
+						return;
 					default:
 						return;
 				}
@@ -119,9 +190,81 @@ const useAction = () => {
 		})
 	}
 	
+	const login = (user) => {
+		setUrlRequest({
+			url:"/login",
+			request:{
+				method:"POST",
+				headers:{
+					"Content-type":"application/json"
+				},
+				body:JSON.stringify(user)
+			},
+			action:"login"
+		})
+	}
+	
+	const logout = () => {
+		setUrlRequest({
+			url:"/logout",
+			request:{
+				method:"POST",
+				headers:{
+					"token":state.token
+				}
+			},
+			action:"logout"
+		})
+	}
+	
 	//SHOPPING API
 
-	return {state,register};
+	const getList = (token) => {
+		let tempToken = state.token;
+		if(token) {
+			tempToken = token;
+		}
+		setUrlRequest({
+			url:"/api/shopping",
+			request:{
+				method:"GET",
+				headers:{
+					"token":tempToken
+				}
+			},
+			action:"getlist"
+		})
+	}
+
+	const addItem = (item) => {
+		setUrlRequest({
+			url:"/api/shopping",
+			request:{
+				method:"POST",
+				headers:{
+					"Content-type":"application/json",
+					"token":state.token
+				},
+				body:JSON.stringify(item)
+			},
+			action:"additem"
+		})
+	}
+	
+	const removeItem = (id) => {
+		setUrlRequest({
+			url:"/api/shopping/"+id,
+			request:{
+				method:"DELETE",
+				headers:{
+					"token":state.token
+				}
+			},
+			action:"removeitem"
+		})
+	}
+
+	return {state,register,login,logout,getList,addItem,removeItem};
 
 }
 

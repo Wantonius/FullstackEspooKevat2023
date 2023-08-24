@@ -2,12 +2,14 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import useAction from './hooks/useAction';
 import LoginPage from './components/LoginPage';
+import ShoppingForm from './components/ShoppingForm';
+import ShoppingList from './components/ShoppingList';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 	
-	const {state,register} = useAction();
+	const {state,register,login,logout,addItem,removeItem} = useAction();
 	
 	let title = "Shopping App";
 	if(state.loading) {
@@ -25,9 +27,23 @@ export default function App() {
 					backgroundColor:"#00CCCC"
 				}
 			}}>
-				<Stack.Screen name="Login">
-				{props => <LoginPage {...props} register={register}/>}
-				</Stack.Screen>
+			{state.isLogged ? (
+				<>
+					<Stack.Screen name="ShoppingList">
+					{props => <ShoppingList {...props} list={state.list} removeItem={removeItem} logout={logout}/>}
+					</Stack.Screen>
+					<Stack.Screen name="ShoppingForm">
+					{props => <ShoppingForm {...props} addItem={addItem}/>}
+					</Stack.Screen>
+				</>			
+			):(
+				<>
+					<Stack.Screen name="Login">
+					{props => <LoginPage {...props} register={register} login={login}/>}
+					</Stack.Screen>
+				</>
+			)	
+			}
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
