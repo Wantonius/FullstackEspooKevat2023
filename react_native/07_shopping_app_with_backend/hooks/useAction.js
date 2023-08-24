@@ -54,7 +54,7 @@ const useAction = () => {
 			if(response.ok) {
 				switch(urlRequest.action) {
 					case "register":
-						setState((state) {
+						setState((state) => {
 							return {
 								...state,
 								error:"Register success!"
